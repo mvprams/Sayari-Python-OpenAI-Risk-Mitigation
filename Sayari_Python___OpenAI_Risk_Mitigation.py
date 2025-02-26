@@ -278,16 +278,16 @@ class SayariConsoleApp:
             return False
             
         # Get companies that are not sanctioned
-        unsanctioned_companies = [c for c in self.company_info if not c.sanctioned]
+        sanctioned_companies = [c for c in self.company_info if c.sanctioned]
         
-        if not unsanctioned_companies:
+        if sanctioned_companies:
             print("No unsanctioned companies found to analyze.")
             return False
         
-        print(f"Getting risk recommendations for {len(unsanctioned_companies)} unsanctioned companies...")
+        print(f"Getting risk recommendations for {len(sanctioned_companies)} sanctioned companies...")
         
         # Build the list of company names
-        company_names = [c.label for c in unsanctioned_companies]
+        company_names = [c.label for c in sanctioned_companies]
         company_list_text = ", ".join(company_names)
         
         # Set up the prompt
@@ -362,7 +362,7 @@ class SayariConsoleApp:
         # Build the list of companies with addresses
         company_details = []
         for company in self.file_data:
-            company_details.append(f"Company: {company.name}, Address: {company.address}, Country: {company.country}")
+            company_details.append(f"Company: {company.name}, Address: {company.address}, Country Code: {company.country}")
         
         company_list_text = " || ".join(company_details)
         
@@ -416,7 +416,7 @@ class SayariConsoleApp:
                     # Optionally save the response
                     if self.SAVE_RESPONSES:
                         filename = os.path.join(self.RESPONSE_FOLDER, "companies_by_distance.txt")
-                        with open(filename, 'w', encoding='utf-8') as f:
+                        with open(filename, 'w', encoding='latin-1') as f:
                             f.write(content)
                 
                 return True
