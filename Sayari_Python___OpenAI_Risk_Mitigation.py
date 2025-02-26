@@ -261,7 +261,7 @@ class SayariConsoleApp:
                     print(f"  Response: {response.text}")
                 
                 # Add a small delay to avoid hitting API rate limits
-                time.sleep(0.5)
+                time.sleep(0.3)
                     
             except Exception as e:
                 print(f"  An error occurred: {str(e)}")
@@ -280,8 +280,8 @@ class SayariConsoleApp:
         # Get companies that are not sanctioned
         sanctioned_companies = [c for c in self.company_info if c.sanctioned]
         
-        if sanctioned_companies:
-            print("No unsanctioned companies found to analyze.")
+        if not sanctioned_companies:
+            print("No sanctioned companies found to analyze.")
             return False
         
         print(f"Getting risk recommendations for {len(sanctioned_companies)} sanctioned companies...")
@@ -361,14 +361,18 @@ class SayariConsoleApp:
         
         # Build the list of companies with addresses
         company_details = []
+
+        i = 0
+ 
         for company in self.file_data:
-            company_details.append(f"Company: {company.name}, Address: {company.address}, Country Code: {company.country}")
+            company_details.append(f"{i+1}. Company Name: {company.name}, full address of company: {company.address}, {company.country}")
+            i = i+1
         
         company_list_text = " || ".join(company_details)
         
         # Set up the prompt
         prompt = (f"I have a list of {len(self.file_data)} companies and would like to find which company is located "
-                 f"the closest to Sayari's HQ @ 829 7th St NW Floor 3, Washington, DC 20001. "
+                 f"the closest to Sayari's HQ @ 829 7th St NW Floor 3, Washington, DC 20001, USA. "
                  f"The list of companies are {company_list_text}. "
                  f"Please list these companies in order from closest to furthest from Sayari's HQ and include just the "
                  f"company name and calculated distance from the Sayari HQ.")
